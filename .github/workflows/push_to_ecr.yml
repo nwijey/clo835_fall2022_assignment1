@@ -32,7 +32,7 @@ jobs:
         ECR_REPOSITORY: clo835-assignment1-app
         IMAGE_TAG: app.latest
       run: |
-        cd app/
+        #cd app/
         ls -ltra
         # Docker build
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile .
@@ -50,7 +50,7 @@ jobs:
         ECR_REPOSITORY: clo835-assignment1-db
         IMAGE_TAG: db.latest
       run: |
-        cd db/
+        #cd db/
         ls -ltra
         # Docker build
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile_mysql .
