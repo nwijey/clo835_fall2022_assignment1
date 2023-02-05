@@ -10,5 +10,5 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 EXPOSE 8081
 ENV APP_COLOR=blue
-ENTRYPOINT FLASK_APP=/opt/app.py flask run --host=0.0.0.0 --port=8081
-#CMD [ "app.py" ]
+ENTRYPOINT [ "python3" ]
+CMD [ "app.py" ]
