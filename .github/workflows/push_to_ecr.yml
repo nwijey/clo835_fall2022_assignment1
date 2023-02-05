@@ -29,7 +29,7 @@ jobs:
     - name: Build, test, tag, and push image to Amazon ECR
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: clo835-assignment1
+        ECR_REPOSITORY: clo835-assignment1-app
         IMAGE_TAG: app.latest
       run: |
         cd app/
@@ -41,13 +41,13 @@ jobs:
         #docker ps
         #echo "Pause for 10 seconds to let container start"
         #sleep 10
-        # curl localhost -vvv
+        #curl localhost -vvv
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
     - name: Build, test, tag, and push image to Amazon ECR
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: clo835-assignment1
+        ECR_REPOSITORY: clo835-assignment1-db
         IMAGE_TAG: db.latest
       run: |
         cd db/
@@ -55,9 +55,9 @@ jobs:
         # Docker build
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile_mysql .
         # Unit test
-        # docker run -d -p 38080:8080 --name clo835-assignment1-db $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        #docker run -d -p 38080:8080 --name clo835-assignment1-db $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         #docker ps
         #echo "Pause for 10 seconds to let container start"
         #sleep 10
-        # curl localhost -vvv
+        #curl localhost -vvv
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
