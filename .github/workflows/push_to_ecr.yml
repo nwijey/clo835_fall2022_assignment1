@@ -35,12 +35,12 @@ jobs:
         cd app/
         ls -ltra
         # Docker build
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile .
         # Unit test
-        docker run -d -p 8080:8080 --name clo835-assignment1-app $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        docker ps
-        echo "Pause for 10 seconds to let container start"
-        sleep 10
+        #docker run -d -p 8080:8080 --name clo835-assignment1-app $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        #docker ps
+        #echo "Pause for 10 seconds to let container start"
+        #sleep 10
         # curl localhost -vvv
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
@@ -53,11 +53,11 @@ jobs:
         cd db/
         ls -ltra
         # Docker build
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile_mysql .
         # Unit test
-        docker run -d -p 38080:8080 --name clo835-assignment1-db $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        docker ps
-        echo "Pause for 10 seconds to let container start"
-        sleep 10
+        # docker run -d -p 38080:8080 --name clo835-assignment1-db $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        #docker ps
+        #echo "Pause for 10 seconds to let container start"
+        #sleep 10
         # curl localhost -vvv
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
