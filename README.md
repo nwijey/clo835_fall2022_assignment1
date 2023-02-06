@@ -39,3 +39,5 @@ export APP_COLOR=blue
 ```
 ### Run the application, make sure it is visible in the browser
 ```docker run -p 8080:8080  -e DBHOST=$DBHOST -e DBPORT=$DBPORT -e  DBUSER=$DBUSER -e DBPWD=$DBPWD  my_app```
+
+[![Deploy to ECR](https://github.com/nwijey/clo835_fall2022_assignment1/actions/workflows/push_to_ecr.yml/badge.svg)](https://github.com/nwijey/clo835_fall2022_assignment1/actions/workflows/push_to_ecr.yml)
