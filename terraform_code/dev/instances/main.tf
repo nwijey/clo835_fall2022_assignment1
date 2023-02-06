@@ -1,7 +1,6 @@
 
-
 #----------------------------------------------------------
-# ACS730 - Week 3 - Terraform Introduction
+# CLO835 - Assignment 1
 #
 # Build EC2 Instances
 #
@@ -45,12 +44,14 @@ module "globalvars" {
   source = "../../modules/globalvars"
 }
 
+
 # Reference subnet provisioned by 01-Networking 
 resource "aws_instance" "my_amazon" {
   ami                         = data.aws_ami.latest_amazon_linux.id
   instance_type               = lookup(var.instance_type, var.env)
   key_name                    = aws_key_pair.my_key.key_name
-  vpc_security_group_ids             = [aws_security_group.my_sg.id]
+  vpc_security_group_ids      = [aws_security_group.my_sg.id]
+  iam_instance_profile        = "LabInstanceProfile"
   associate_public_ip_address = false
 
   user_data = templatefile("${path.module}/install_docker.sh.tpl",
@@ -80,8 +81,8 @@ resource "aws_key_pair" "my_key" {
 
 # Security Group
 resource "aws_security_group" "my_sg" {
-  name        = "allow_ssh"
-  description = "Allow SSH inbound traffic"
+  name        = "allow_ssh_http"
+  description = "Allow SSH and http inbound traffic"
   vpc_id      = data.aws_vpc.default.id
 
   ingress {
@@ -146,16 +147,7 @@ resource "aws_eip" "static_eip" {
   )
 }
 
-/*resource "aws_ecr_repository" "clo835-assignment1" {
-  name = "clo835-assignment1"
-  tags = merge(local.default_tags,
-    {
-      "Name" = "${local.name_prefix}-ecr-repository"
-    }
-  )
-}*/
-
-
+# ECR repositories
 resource "aws_ecr_repository" "clo835-assignment1-app" {
   name                 = "clo835-assignment1-app"
   image_tag_mutability = "MUTABLE"
@@ -165,11 +157,56 @@ resource "aws_ecr_repository" "clo835-assignment1-db" {
   name                 = "clo835-assignment1-db"
   image_tag_mutability = "MUTABLE"
 }
-/*resource "aws_ecr_repository" "pink" {
-  name                 = "pink-image"
-  image_tag_mutability = "MUTABLE"
+
+
+/*
+# Load balancer
+resource "aws_lb" "alb" {
+#  for_each = var.ports
+  name               = "alb-${var.env}"
+  internal           = false
+  ip_address_type    = "ipv4"
+  load_balancer_type = "application"
+#  security_groups    = [aws_security_group.my_sg.id]
+  subnets            = aws_subnet.public_subnet.id[*]
+  tags = merge(local.default_tags,
+    {
+      "Name" = "${local.name_prefix}-ALB"
+    }
+  )
 }
-resource "aws_ecr_repository" "lime" {
-  name                 = "lime-image"
-  image_tag_mutability = "MUTABLE"
+
+resource "aws_lb_listener" "alb_listener" {
+  for_each = var.ports
+  load_balancer_arn = aws_lb.alb.arn
+  port              = each.value
+  protocol          = "TCP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.target_group.arn
+  }
+}
+
+resource "aws_lb_target_group" "target_group" {
+ # for_each = var.ports
+  name        = "tg-alb-${var.env}"
+  port        = 8081
+  protocol    = "TCP"
+  target_type = "instance"
+  vpc_id      = data.aws_vpc.default.id
+
+  depends_on = [
+    aws_lb.alb
+  ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_lb_target_group_attachment" "container" {
+ # for_each = var.ports
+  target_group_arn = aws_lb_target_group.target_group.arn
+  target_id        = aws_instance.my_amazon.id
+  port             = 8081
 }*/
